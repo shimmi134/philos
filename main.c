@@ -171,40 +171,6 @@ void give_forks(t_philo **p, int num)
 	}
 }
 
-t_rules *create_rules(char **av)
-{
-	t_rules *rules;
-
-	rules = malloc(sizeof(t_rules));
-	if (!rules)
-		return (NULL);
-	rules->n_philos = ft_atoi(av[1]);
-	rules->death_time = ft_atoi(av[2]);
-	rules->eat_time = ft_atoi(av[3]);
-	rules->sleep_time = ft_atoi(av[4]);
-	if (av[5])
-		rules->must_eat = ft_atoi(av[5]);
-	else
-		rules->must_eat = -1;
-	rules->die = 0;
-	pthread_mutex_init(&(rules->mutex),NULL);
-	return (rules);
-}
-
-void	destroy_philos(t_philo **philos, int j)
-{
-	int		i;
-
-	i = 0;
-	while (i < j)
-	{
-		pthread_join((philos[i])->thread, NULL);
-		free(philos[i]);
-		i++;
-	}
-	free(philos);
-}
-
 t_philo** create_philos(t_rules *rules)
 {
 	t_philo **philos;
@@ -228,6 +194,89 @@ t_philo** create_philos(t_rules *rules)
 	return (philos);
 }
 
+void	destroy_philos(t_philo **philos, int philos_num)
+{
+	int		i;
+
+	i = 0;
+	while (i < philos_num)
+	{
+		pthread_join((philos[i])->thread, NULL);
+		free(philos[i]);
+		i++;
+	}
+	free(philos);
+}
+
+t_rules *create_rules(char **av)
+{
+	t_rules *rules;
+
+	rules = malloc(sizeof(t_rules));
+	if (!rules)
+		return (NULL);
+	rules->n_philos = ft_atoi(av[1]);
+	rules->death_time = ft_atoi(av[2]);
+	rules->eat_time = ft_atoi(av[3]);
+	rules->sleep_time = ft_atoi(av[4]);
+	if (av[5])
+		rules->must_eat = ft_atoi(av[5]);
+	else
+		rules->must_eat = -1;
+	rules->die = 0;
+	pthread_mutex_init(&(rules->mutex),NULL);
+	return (rules);
+}
+
+int	ft_isdigit(int c)
+{
+	return (c >= 48 && c <= 57);
+}
+
+int	ft_isstr_num(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str && str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	parse_input(char **av)
+{
+	if ((ft_atoi(av[1]) <= 0 || ft_atoi(av[1]) > INT_MAX) || !ft_isstr_num(av[1]))
+	{
+		printf("The number of philosophers has to be a positive number smaller than int max.\n");
+		return (1);
+	}
+	if (ft_atoi(av[2]) <= 0 || ft_atoi(av[2]) > INT_MAX || !ft_isstr_num(av[2]))
+	{
+		printf("Death time has to be a positive number smaller than int max.\n");
+		return (1);
+	}
+	if (ft_atoi(av[3]) <= 0 || ft_atoi(av[3]) > INT_MAX || !ft_isstr_num(av[3]))
+	{
+		printf("Eating time has to be a positive number smaller than int max.\n");
+		return (1);
+	}
+	if (ft_atoi(av[4]) <= 0 || ft_atoi(av[4]) > INT_MAX || !ft_isstr_num(av[4]))
+	{
+		printf("Sleeping time has to be a positive number smaller than int max.\n");
+		return (1);
+	}
+	if (av[5] && (ft_atoi(av[1]) <= 0 || ft_atoi(av[1]) > INT_MAX || !ft_isstr_num(av[5])))
+	{
+		printf("Times each philo must eat has to be a positive number smaller than int max.\n");
+		return (1);
+	}
+	return (0);
+}
+
 int main(int ac, char *av[])
 {
 	t_rules		*rules;
@@ -238,11 +287,13 @@ int main(int ac, char *av[])
 		printf("Wrong argument number, only 4 or 5!\n");
 		return (1);
 	}
+	if (parse_input(av))
+		return (2);
 	rules = create_rules(av);
 	if (!rules)
 	{
 		printf("Error creating rules, try again.\n");
-		return (2);
+		return (3);
 	}
 	philos = create_philos(rules);
 	destroy_philos(philos, rules->n_philos);
