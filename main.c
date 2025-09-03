@@ -5,38 +5,40 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/26 16:54:35 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/08/26 16:54:37 by shimi-be         ###   ########.fr       */
+/*   Created: 2025/09/03 14:13:42 by shimi-be          #+#    #+#             */
+/*   Updated: 2025/09/03 15:11:58 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <pthread.h>
 #include "philos.h"
 
-void give_forks(t_philo **p, int num)
+void	give_forks(t_philo **p, int num)
 {
-	int i = 0;
-	for (; i < num; ){
+	int	i;
+
+	i = 0;
+	for (; i < num;)
+	{
 		if (i == 0)
-			(p[i])->l_fork = &((p[num-1])->r_fork);
+			(p[i])->l_fork = &((p[num - 1])->r_fork);
 		else
-			(p[i])->l_fork = &((p[i-1])->r_fork);
-		pthread_create(&(p[i])->thread, NULL, philo_main,p[i]);
+			(p[i])->l_fork = &((p[i - 1])->r_fork);
+		pthread_create(&(p[i])->thread, NULL, philo_main, p[i]);
 		i++;
 	}
 }
 
-t_philo** create_philos(t_rules *rules)
+t_philo	**create_philos(t_rules *rules)
 {
-	t_philo **philos;
+	t_philo	**philos;
 
-	pthread_mutex_lock(&(rules->mutex));
 	philos = malloc(sizeof(t_philo *) * rules->n_philos);
 	if (!philos)
 		return (NULL);
-	for (int i = 0; i < rules->n_philos; i++){	
+	for (int i = 0; i < rules->n_philos; i++)
+	{
 		philos[i] = malloc(sizeof(t_philo));
-		(philos[i])->num = i+1;
+		(philos[i])->num = i + 1;
 		(philos[i])->times_eaten = 0;
 		(philos[i])->time = 0;
 		(philos[i])->rules = rules;
@@ -44,13 +46,12 @@ t_philo** create_philos(t_rules *rules)
 		pthread_mutex_init(&((philos[i])->r_fork), NULL);
 	}
 	give_forks(philos, rules->n_philos);
-	pthread_mutex_unlock(&(rules->mutex));
 	return (philos);
 }
 
 void	destroy_philos(t_philo **philos, int philos_num)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (i < philos_num)
@@ -62,9 +63,9 @@ void	destroy_philos(t_philo **philos, int philos_num)
 	free(philos);
 }
 
-t_rules *create_rules(char **av)
+t_rules	*create_rules(char **av)
 {
-	t_rules *rules;
+	t_rules	*rules;
 
 	rules = malloc(sizeof(t_rules));
 	if (!rules)
@@ -78,7 +79,7 @@ t_rules *create_rules(char **av)
 	else
 		rules->must_eat = -1;
 	rules->die = 0;
-	pthread_mutex_init(&(rules->mutex),NULL);
+	pthread_mutex_init(&(rules->mutex), NULL);
 	return (rules);
 }
 
@@ -87,14 +88,15 @@ void	*monitoring(void *val)
 	t_rules	*rules;
 	int		i;
 
-	rules = (t_rules*)val;
-	while(1)
+	rules = (t_rules *)val;
+	while (1)
 	{
 		i = 0;
 		while (i < rules->n_philos)
 		{
 			pthread_mutex_lock(&rules->mutex);
-			if (rules->die == 0 && get_time() - rules->philos[i]->time >= rules->death_time)
+			if (rules->die == 0 && get_time()
+				- rules->philos[i]->time >= rules->death_time)
 			{
 				pthread_mutex_unlock(&rules->mutex);
 				philo_death(rules->philos[i]);
@@ -116,12 +118,12 @@ void	create_monitor(t_rules *rules)
 	pthread_join(monitor, NULL);
 }
 
-int main(int ac, char *av[])
+int	main(int ac, char *av[])
 {
-	t_rules		*rules;
-	t_philo		**philos;
+	t_rules	*rules;
+	t_philo	**philos;
 
-	if (ac < 4 || ac > 6)
+	if (ac < 5 || ac > 6)
 	{
 		printf("Wrong argument number, only 4 or 5!\n");
 		return (1);

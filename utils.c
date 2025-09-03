@@ -1,13 +1,12 @@
-
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/26 16:54:35 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/08/26 16:54:37 by shimi-be         ###   ########.fr       */
+/*   Created: 2025/09/03 14:13:21 by shimi-be          #+#    #+#             */
+/*   Updated: 2025/09/03 14:13:23 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +39,8 @@ int	ft_atoi(const char *nptr)
 
 long	get_time(void)
 {
-	struct timeval tv;
-	static time_t start_time;
+	struct timeval	tv;
+	static time_t	start_time;
 
 	if (start_time == 0)
 	{
@@ -49,7 +48,7 @@ long	get_time(void)
 		start_time = tv.tv_sec * 1000 + tv.tv_usec / 1000;
 	}
 	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000) + (tv.tv_usec/1000) - start_time);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000) - start_time);
 }
 
 int	ft_isdigit(int c)
@@ -73,15 +72,22 @@ int	ft_isstr_num(char *str)
 
 int	parse_input(char **av)
 {
-	if ((ft_atoi(av[1]) < 0 || ft_atoi(av[1]) >= INT_MAX) || !ft_isstr_num(av[1]))
-		return (printf("The number of philosophers has to be a positive number smaller than int max.\n"),1);
+	if ((ft_atoi(av[1]) < 0 || ft_atoi(av[1]) >= INT_MAX)
+		|| !ft_isstr_num(av[1]))
+		return (printf("The number of philosophers has to be a positive number smaller than int max.\n"),
+			1);
 	if (ft_atoi(av[2]) < 0 || ft_atoi(av[2]) >= INT_MAX || !ft_isstr_num(av[2]))
-		return(printf("Death time has to be a positive number smaller than int max.\n"),1);
+		return (printf("Death time has to be a positive number smaller than int max.\n"),
+			1);
 	if (ft_atoi(av[3]) < 0 || ft_atoi(av[3]) >= INT_MAX || !ft_isstr_num(av[3]))
-		return(printf("Eating time has to be a positive number smaller than int max.\n"),1);
+		return (printf("Eating time has to be a positive number smaller than int max.\n"),
+			1);
 	if (ft_atoi(av[4]) < 0 || ft_atoi(av[4]) >= INT_MAX || !ft_isstr_num(av[4]))
-		return(printf("Sleeping time has to be a positive number smaller than int max.\n"),1);
-	if (av[5] && (ft_atoi(av[5]) < 0 || ft_atoi(av[5]) >= INT_MAX || !ft_isstr_num(av[5])))
-		return(printf("Times each philo must eat has to be a positive number smaller than int max.\n"),1);
+		return (printf("Sleeping time has to be a positive number smaller than int max.\n"),
+			1);
+	if (av[5] && (ft_atoi(av[5]) < 0 || ft_atoi(av[5]) >= INT_MAX
+			|| !ft_isstr_num(av[5])))
+		return (printf("Times each philo must eat has to be a positive number smaller than int max.\n"),
+			1);
 	return (0);
 }
