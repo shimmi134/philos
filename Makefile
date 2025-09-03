@@ -1,23 +1,20 @@
 NAME = philos
-SRC = $(wildcard *.c)
+SRC = create.c loop.c main.c philo_eat.c philo_tsd.c utils.c
 OBJ = $(SRC:.c=.o)
 FLAGS = -Wall -Werror -Wextra -g
 LIBS = -lpthread
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
-	@cc $(addprefix obj/, $(OBJ)) -o $(NAME) $(LIBS)
+$(NAME): $(OBJ) Makefile 
+	@cc $(OBJ) -o $(NAME) $(LIBS)
 	@echo "Philos compiled!"
 
-%.o: %.c
-	@cc $(FLAGS) -c $< -o $@
-	@mkdir -p obj
-	@mv $@ obj/
+%.o: %.c Makefile philos.h
+	cc $(FLAGS) -c $< -o $@
 
 clean:
-	@rm -rf $(addprefix obj/, $(OBJ))
-	@rm -rf obj
+	@rm -rf $(OBJ)
 	@echo "Deleted .o files!"
 
 fclean: clean
