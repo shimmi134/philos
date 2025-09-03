@@ -7,14 +7,17 @@ LIBS = -lpthread
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@cc $(OBJ) -o $(NAME) $(LIBS)
+	@cc $(addprefix obj/, $(OBJ)) -o $(NAME) $(LIBS)
 	@echo "Philos compiled!"
 
 %.o: %.c
 	@cc $(FLAGS) -c $< -o $@
+	@mkdir -p obj
+	@mv $@ obj/
 
 clean:
-	@rm -rf $(OBJ)
+	@rm -rf $(addprefix obj/, $(OBJ))
+	@rm -rf obj
 	@echo "Deleted .o files!"
 
 fclean: clean

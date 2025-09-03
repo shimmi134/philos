@@ -6,7 +6,7 @@
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:14:15 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/09/03 14:15:06 by shimi-be         ###   ########.fr       */
+/*   Updated: 2025/09/03 16:04:58 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,17 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
+
+# define RED "\033[0;31m"
+# define GREEN "\033[0;32m"
+# define YELLOW "\033[0;33m"
+# define BLUE "\033[0;34m"
+# define PURPLE "\033[0;35m"
+# define CYAN "\033[0;36m"
+# define LIGHT_GREEN "\033[1;32m"
+# define GOLD "\033[38;5;220m"
+# define ORANGE "\033[38;5;208m"
+# define RESET "\033[m"
 
 typedef struct s_philo	t_philo;
 
@@ -54,15 +65,18 @@ int						ft_isdigit(int c);
 int						ft_isstr_num(char *str);
 int						parse_input(char **av);
 long					get_time(void);
-void					get_fork_even(t_philo *p);
+void					print_error(char *str);
 void					get_fork_odd(t_philo *p);
+void					get_fork_even(t_philo *p);
 void					philo_death(t_philo *philo);
-void					ft_lonely_philo(t_philo *philo);
 void					philo_think(t_philo *philo);
 void					philo_sleep(t_philo *philo);
+void					create_monitor(t_rules *rules);
+void					ft_lonely_philo(t_philo *philo);
 void					give_forks(t_philo **p, int num);
 void					destroy_philos(t_philo **philos, int philos_num);
 void					*philo_main(void *arg);
+void					*monitoring(void *val);
 t_rules					*create_rules(char **av);
 t_philo					**create_philos(t_rules *rules);
 

@@ -6,116 +6,69 @@
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:13:42 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/09/03 15:11:58 by shimi-be         ###   ########.fr       */
+/*   Updated: 2025/09/03 16:05:43 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philos.h"
 
-void	give_forks(t_philo **p, int num)
+int	parse_input(char **av)
 {
+	if ((ft_atoi(av[1]) < 0 || ft_atoi(av[1]) >= INT_MAX)
+		|| !ft_isstr_num(av[1]))
+		return (print_error("The number of philosophers"), 1);
+	if (ft_atoi(av[2]) < 0 || ft_atoi(av[2]) >= INT_MAX || !ft_isstr_num(av[2]))
+		return (print_error("Death time"), 1);
+	if (ft_atoi(av[3]) < 0 || ft_atoi(av[3]) >= INT_MAX || !ft_isstr_num(av[3]))
+		return (print_error("Eating time"), 1);
+	if (ft_atoi(av[4]) < 0 || ft_atoi(av[4]) >= INT_MAX || !ft_isstr_num(av[4]))
+		return (print_error("Sleeping time"), 1);
+	if (av[5] && (ft_atoi(av[5]) < 0 || ft_atoi(av[5]) >= INT_MAX
+			|| !ft_isstr_num(av[5])))
+		return (print_error("Times each philo must eat"), 1);
+	return (0);
+}
+
+int	monitoring_loop(t_rules *rules)
+{
+	int	eat;
 	int	i;
 
+	eat = 0;
 	i = 0;
-	for (; i < num;)
+	while (i < rules->n_philos)
 	{
-		if (i == 0)
-			(p[i])->l_fork = &((p[num - 1])->r_fork);
-		else
-			(p[i])->l_fork = &((p[i - 1])->r_fork);
-		pthread_create(&(p[i])->thread, NULL, philo_main, p[i]);
+		pthread_mutex_lock(&rules->mutex);
+		if (rules->die == 0 && get_time()
+			- rules->philos[i]->time >= rules->death_time
+			&& rules->philos[i]->times_eaten != rules->must_eat)
+		{
+			pthread_mutex_unlock(&rules->mutex);
+			philo_death(rules->philos[i]);
+			return (1);
+		}
+		if (rules->philos[i]->times_eaten == rules->must_eat)
+			eat++;
+		if (eat == rules->n_philos)
+			return (pthread_mutex_unlock(&rules->mutex), 1);
+		pthread_mutex_unlock(&rules->mutex);
 		i++;
 	}
-}
-
-t_philo	**create_philos(t_rules *rules)
-{
-	t_philo	**philos;
-
-	philos = malloc(sizeof(t_philo *) * rules->n_philos);
-	if (!philos)
-		return (NULL);
-	for (int i = 0; i < rules->n_philos; i++)
-	{
-		philos[i] = malloc(sizeof(t_philo));
-		(philos[i])->num = i + 1;
-		(philos[i])->times_eaten = 0;
-		(philos[i])->time = 0;
-		(philos[i])->rules = rules;
-		(philos[i])->died = 0;
-		pthread_mutex_init(&((philos[i])->r_fork), NULL);
-	}
-	give_forks(philos, rules->n_philos);
-	return (philos);
-}
-
-void	destroy_philos(t_philo **philos, int philos_num)
-{
-	int	i;
-
-	i = 0;
-	while (i < philos_num)
-	{
-		pthread_join((philos[i])->thread, NULL);
-		free(philos[i]);
-		i++;
-	}
-	free(philos);
-}
-
-t_rules	*create_rules(char **av)
-{
-	t_rules	*rules;
-
-	rules = malloc(sizeof(t_rules));
-	if (!rules)
-		return (NULL);
-	rules->n_philos = ft_atoi(av[1]);
-	rules->death_time = ft_atoi(av[2]);
-	rules->eat_time = ft_atoi(av[3]);
-	rules->sleep_time = ft_atoi(av[4]);
-	if (av[5])
-		rules->must_eat = ft_atoi(av[5]);
-	else
-		rules->must_eat = -1;
-	rules->die = 0;
-	pthread_mutex_init(&(rules->mutex), NULL);
-	return (rules);
+	return (0);
 }
 
 void	*monitoring(void *val)
 {
 	t_rules	*rules;
-	int		i;
 
 	rules = (t_rules *)val;
 	while (1)
 	{
-		i = 0;
-		while (i < rules->n_philos)
-		{
-			pthread_mutex_lock(&rules->mutex);
-			if (rules->die == 0 && get_time()
-				- rules->philos[i]->time >= rules->death_time)
-			{
-				pthread_mutex_unlock(&rules->mutex);
-				philo_death(rules->philos[i]);
-				return (NULL);
-			}
-			pthread_mutex_unlock(&rules->mutex);
-			i++;
-		}
+		if (monitoring_loop(rules))
+			return (NULL);
 		usleep(1000);
 	}
 	return (NULL);
-}
-
-void	create_monitor(t_rules *rules)
-{
-	pthread_t	monitor;
-
-	pthread_create(&monitor, NULL, monitoring, rules);
-	pthread_join(monitor, NULL);
 }
 
 int	main(int ac, char *av[])
