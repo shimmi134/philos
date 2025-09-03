@@ -6,7 +6,7 @@
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:42:25 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/09/03 15:43:03 by shimi-be         ###   ########.fr       */
+/*   Updated: 2025/09/03 18:43:42 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	get_fork_even(t_philo *p)
 	pthread_mutex_lock(&p->r_fork);
 	pthread_mutex_lock(&p->rules->mutex);
 	if (p->rules->die == 0)
-		printf(GOLD "%ld %i took a fork\n" RESET, get_time(), p->num);
+		printf(GOLD "%ld %i has taken a fork\n" RESET, get_time(), p->num);
 	pthread_mutex_unlock(&p->rules->mutex);
 	if (get_time() - p->time >= p->rules->death_time)
 	{
@@ -36,7 +36,7 @@ void	get_fork_even(t_philo *p)
 	pthread_mutex_unlock(&p->rules->mutex);
 	pthread_mutex_lock(&p->rules->mutex);
 	if (p->rules->die == 0)
-		printf(GOLD "%ld %i took a fork\n" RESET, get_time(), p->num);
+		printf(GOLD "%ld %i has taken a fork\n" RESET, get_time(), p->num);
 	pthread_mutex_unlock(&p->rules->mutex);
 }
 
@@ -45,7 +45,7 @@ void	get_fork_odd(t_philo *p)
 	pthread_mutex_lock(p->l_fork);
 	pthread_mutex_lock(&p->rules->mutex);
 	if (p->rules->die == 0)
-		printf(GOLD "%ld %i took a fork\n" RESET, get_time(), p->num);
+		printf(GOLD "%ld %i has taken a fork\n" RESET, get_time(), p->num);
 	pthread_mutex_unlock(&p->rules->mutex);
 	if (get_time() - p->time >= p->rules->death_time)
 	{
@@ -64,7 +64,7 @@ void	get_fork_odd(t_philo *p)
 	pthread_mutex_unlock(&p->rules->mutex);
 	pthread_mutex_lock(&p->rules->mutex);
 	if (p->rules->die == 0)
-		printf(GOLD "%ld %i took a fork\n" RESET, get_time(), p->num);
+		printf(GOLD "%ld %i has taken a fork\n" RESET, get_time(), p->num);
 	pthread_mutex_unlock(&p->rules->mutex);
 }
 
@@ -99,10 +99,14 @@ int	philo_eat(t_philo *philo)
 	pthread_mutex_unlock(&philo->rules->mutex);
 	pthread_mutex_lock(&philo->rules->mutex);
 	philo->time = get_time();
+	pthread_mutex_unlock(&philo->rules->mutex);
+	pthread_mutex_lock(&philo->rules->mutex);
 	if (philo->rules->die == 0)
 		printf(ORANGE "%ld %i is eating\n" RESET, philo->time, philo->num);
 	pthread_mutex_unlock(&philo->rules->mutex);
 	usleep(philo->rules->eat_time * 1000);
+	pthread_mutex_lock(&philo->rules->mutex);
 	philo->times_eaten += 1;
+	pthread_mutex_unlock(&philo->rules->mutex);
 	return (mut_cleanup(philo), 0);
 }

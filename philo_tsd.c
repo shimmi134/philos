@@ -6,7 +6,7 @@
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:13:13 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/09/03 15:17:26 by shimi-be         ###   ########.fr       */
+/*   Updated: 2025/09/03 18:44:53 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	philo_death(t_philo *philo)
 void	ft_lonely_philo(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->rules->mutex);
-	printf(GREEN "%ld %i has taken a fork\n" RESET, get_time(), philo->num);
+	printf(GOLD "%ld %i has taken a fork\n" RESET, get_time(), philo->num);
 	usleep(philo->rules->death_time * 1000);
 	pthread_mutex_unlock(&philo->rules->mutex);
 }

@@ -6,7 +6,7 @@
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:54:18 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/09/03 15:55:07 by shimi-be         ###   ########.fr       */
+/*   Updated: 2025/09/03 18:35:04 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	create_monitor(t_rules *rules)
 	pthread_t	monitor;
 
 	pthread_create(&monitor, NULL, monitoring, rules);
-	pthread_join(monitor, NULL);
+	rules->monitor = monitor;
 }
 
 void	destroy_philos(t_philo **philos, int philos_num)
@@ -72,6 +72,12 @@ void	destroy_philos(t_philo **philos, int philos_num)
 	while (i < philos_num)
 	{
 		pthread_join((philos[i])->thread, NULL);
+		i++;
+	}
+	i = 0;
+	while (i < philos_num)
+	{
+		pthread_mutex_destroy(&philos[i]->r_fork);
 		free(philos[i]);
 		i++;
 	}

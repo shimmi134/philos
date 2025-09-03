@@ -6,7 +6,7 @@
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:13:29 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/09/03 15:43:11 by shimi-be         ###   ########.fr       */
+/*   Updated: 2025/09/03 18:46:15 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,11 @@ int	philo_loop(t_philo *philo)
 		pthread_mutex_unlock(&philo->rules->mutex);
 		if (philo_eat(philo))
 			return (0);
+		pthread_mutex_lock(&philo->rules->mutex);
 		if (philo->times_eaten == philo->rules->must_eat)
 			return (printf(YELLOW "%ld %i is full\n" RESET, get_time(),
-					philo->num), 0);
+					philo->num), pthread_mutex_unlock(&philo->rules->mutex), 0);
+		pthread_mutex_unlock(&philo->rules->mutex);
 		philo_sleep(philo);
 		pthread_mutex_lock(&philo->rules->mutex);
 		if (philo->died != 0 || philo->rules->die != 0)

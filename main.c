@@ -6,7 +6,7 @@
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:13:42 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/09/03 16:05:43 by shimi-be         ###   ########.fr       */
+/*   Updated: 2025/09/03 18:38:49 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,9 @@ int	main(int ac, char *av[])
 	philos = create_philos(rules);
 	rules->philos = philos;
 	create_monitor(rules);
+	pthread_join(rules->monitor, NULL);
 	destroy_philos(philos, rules->n_philos);
+	pthread_mutex_destroy(&rules->mutex);
 	free(rules);
 	return (0);
 }

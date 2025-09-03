@@ -6,7 +6,7 @@
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:14:15 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/09/03 16:04:58 by shimi-be         ###   ########.fr       */
+/*   Updated: 2025/09/03 18:34:01 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_rule
 	int					start_time;
 	t_philo				**philos;
 	pthread_mutex_t		mutex;
+	pthread_t			monitor;
 }						t_rules;
 
 typedef struct s_philo
