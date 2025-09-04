@@ -63,7 +63,9 @@ int	ft_isstr_num(char *str)
 	i = 0;
 	while (str && str[i])
 	{
-		if (!ft_isdigit(str[i]))
+		if (str[i] == '+' && i != 0)
+			return (0);
+		else if (!ft_isdigit(str[i]) && str[i] != '+')
 			return (0);
 		i++;
 	}
@@ -72,5 +74,5 @@ int	ft_isstr_num(char *str)
 
 void	print_error(char *str)
 {
-	printf("%s has to be a positive number smaller than max int\n", str);
+	printf("%s has to be a positive int smaller than max int\n", str);
 }

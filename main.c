@@ -6,7 +6,7 @@
 /*   By: shimi-be <shimi-be@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:13:42 by shimi-be          #+#    #+#             */
-/*   Updated: 2025/09/03 18:38:49 by shimi-be         ###   ########.fr       */
+/*   Updated: 2025/09/04 13:38:03 by shimi-be         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,19 @@
 
 int	parse_input(char **av)
 {
-	if ((ft_atoi(av[1]) < 0 || ft_atoi(av[1]) >= INT_MAX)
+	if ((ft_atoi(av[1]) <= 0 || ft_atoi(av[1]) >= INT_MAX)
 		|| !ft_isstr_num(av[1]))
 		return (print_error("The number of philosophers"), 1);
-	if (ft_atoi(av[2]) < 0 || ft_atoi(av[2]) >= INT_MAX || !ft_isstr_num(av[2]))
+	if (ft_atoi(av[2]) <= 0 || ft_atoi(av[2]) >= INT_MAX
+		|| !ft_isstr_num(av[2]))
 		return (print_error("Death time"), 1);
-	if (ft_atoi(av[3]) < 0 || ft_atoi(av[3]) >= INT_MAX || !ft_isstr_num(av[3]))
+	if (ft_atoi(av[3]) <= 0 || ft_atoi(av[3]) >= INT_MAX
+		|| !ft_isstr_num(av[3]))
 		return (print_error("Eating time"), 1);
-	if (ft_atoi(av[4]) < 0 || ft_atoi(av[4]) >= INT_MAX || !ft_isstr_num(av[4]))
+	if (ft_atoi(av[4]) <= 0 || ft_atoi(av[4]) >= INT_MAX
+		|| !ft_isstr_num(av[4]))
 		return (print_error("Sleeping time"), 1);
-	if (av[5] && (ft_atoi(av[5]) < 0 || ft_atoi(av[5]) >= INT_MAX
+	if (av[5] && (ft_atoi(av[5]) <= 0 || ft_atoi(av[5]) >= INT_MAX
 			|| !ft_isstr_num(av[5])))
 		return (print_error("Times each philo must eat"), 1);
 	return (0);

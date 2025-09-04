@@ -41,6 +41,7 @@ void	philo_think(t_philo *philo)
 	if (philo->rules->die == 0)
 		printf(CYAN "%ld %d is thinking\n" RESET, get_time(), philo->num);
 	pthread_mutex_unlock(&philo->rules->mutex);
+	usleep(5000);
 }
 
 void	philo_sleep(t_philo *philo)
